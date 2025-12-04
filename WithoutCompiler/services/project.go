@@ -29,7 +29,7 @@ func (p *ProjectService) CreatProject(path string, language string) string {
 
 	
 
-	res := p.fileService.DownloadDockerFile(url,path,"dockerfile")
+	res := p.fileService.DownloadDockerConfig(url,path,"dockerfile")
 
 	commands := [][]string{
 		{"docker", "compose", "run", "--rm", "app", "npm", "init", "-y"},
@@ -41,10 +41,10 @@ func (p *ProjectService) CreatProject(path string, language string) string {
 		cmd.Dir = path
 		output, err := cmd.CombinedOutput()
 		if err != nil {
-            return fmt.Errorf("erreur sur la commande %s: %s\nSortie: %s", args, err, string(output))
+            return fmt.Sprintf("erreur sur la commande %s: %s\nSortie: %s", args, err, string(output))
         }
 	}
-	return fmt.Sprintf(output)
+	return fmt.Sprintf(res)
 }
 
  
