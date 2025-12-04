@@ -1,4 +1,4 @@
-module WithoutCompilator
+module WithoutCompiler
 
 go 1.23
 
