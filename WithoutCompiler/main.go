@@ -16,7 +16,10 @@ var assets embed.FS
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
+	fileService := services.NewFileService()
+	
 	containerService := services.NewContainerService()
+
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -28,12 +31,14 @@ func main() {
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup:	func(ctx context.Context) {
+			fileService.Startup(ctx)
 			app.startup(ctx)
 			containerService.Startup(ctx)
 		},
 		Bind: []interface{}{
 			app,
 			containerService,
+			fileService,
 		},
 	})
 

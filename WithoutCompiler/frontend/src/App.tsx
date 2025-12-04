@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { HashRouter, Routes, Route, NavLink } from "react-router-dom";
 import "./App.css";
 import { MountContainer } from "../wailsjs/go/services/ContainerService";
+import CreateProject from "./view/CreateProject";
 
 function App() {
   const [resultText, setResultText] = useState(
@@ -15,25 +17,50 @@ function App() {
   }
 
   return (
-    <div id="App">
-      <h1>Mount container</h1>
-      <div id="result" className="result">
-        {resultText}
-      </div>
-      <div id="input" className="input-box">
-        <input
-          id="name"
-          className="input"
-          onChange={updatePath}
-          autoComplete="off"
-          name="input"
-          type="text"
-        />
-        <button className="btn" onClick={mountContainer}>
-          Mount
-        </button>
-      </div>
-    </div>
+    <>
+      <HashRouter basename="/">
+        <div
+          className="app-container"
+          style={{ display: "flex", height: "100vh" }}
+        >
+          {/* --- MENU LATÉRAL (Sidebar) --- */}
+          <nav
+            style={{
+              width: "200px",
+              background: "#333",
+              color: "white",
+              padding: "20px",
+            }}
+          >
+            <h3>Mon App</h3>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              <li>
+                <NavLink to="/" style={{ color: "white" }}>
+                  Accueil
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/create" style={{ color: "white" }}>
+                  Nouveau Projet
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard" style={{ color: "white" }}>
+                  Tableau de bord
+                </NavLink>
+              </li>
+            </ul>
+          </nav>
+
+          {/* --- ZONE DE CONTENU QUI CHANGE --- */}
+          <main style={{ flex: 1, padding: "20px", overflow: "auto" }}>
+            <Routes>
+              <Route path="/create" element={<CreateProject />} />
+            </Routes>
+          </main>
+        </div>
+      </HashRouter>
+    </>
   );
 }
 

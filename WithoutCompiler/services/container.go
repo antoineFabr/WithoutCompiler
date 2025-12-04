@@ -8,10 +8,14 @@ import (
 
 type ContainerService struct {
 	ctx context.Context
+	fileService *FileService
+
 }
 
-func NewContainerService() *ContainerService {
-	return &ContainerService{}
+func NewContainerService(fs *FileService) *ContainerService {
+	return &ContainerService{
+		fileService: fs,
+	}
 }
 
 func (c *ContainerService) Startup(ctx context.Context) {

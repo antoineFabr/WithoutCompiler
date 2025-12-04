@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-)
 
+	"github.com/wailsapp/wails/v2/pkg/runtime"
+)
 
 // App struct
 type App struct {
@@ -25,4 +26,13 @@ func (a *App) startup(ctx context.Context) {
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
+}
+func (a *App) OpenFolderDialog() string {
+	selection, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "Selectionnez le dossier de votre projet",
+	})
+	if err != nil {
+		return ""
+	}
+	return selection
 }
