@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+	"os/exec"
 )
 
 type ProjectService struct {
@@ -24,10 +25,26 @@ func (p *ProjectService) Startup(ctx context.Context) {
 
 func (p *ProjectService) CreatProject(path string, language string) string {
 
-	url := "https://raw.githubusercontent.com/antoineFabr/WithoutCompiler/refs/heads/main/dockerFile/"+language+"/dockerfile"
+	url := "https://raw.githubusercontent.com/antoineFabr/WithoutCompiler/refs/heads/main/dockerFile/"+language
+
+	
 
 	res := p.fileService.DownloadDockerFile(url,path,"dockerfile")
-	return fmt.Sprintf(res)
+
+	commands := [][]string{
+		{"docker", "compose", "run", "--rm", "app", "npm", "init", "-y"},
+        {"docker", "compose", "up", "-d"},
+	}
+
+	for _, args := range commands {
+		cmd := exec.Command(args[0], args[1:]...)
+		cmd.Dir = path
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+            return fmt.Errorf("erreur sur la commande %s: %s\nSortie: %s", args, err, string(output))
+        }
+	}
+	return fmt.Sprintf(output)
 }
 
  

@@ -1,0 +1,20 @@
+# On part d'une version légère de Node (ici la version 20)
+FROM node:20-alpine
+
+# On définit le dossier de travail à l'intérieur du conteneur
+WORKDIR /app
+
+# On copie d'abord les fichiers de dépendances (optimisation du cache Docker)
+COPY package*.json ./
+
+# On installe les dépendances
+RUN npm install
+
+# On copie le reste du projet (utile pour le build, même si le volume va écraser ça en dev)
+COPY . .
+
+# On expose le port (par exemple 3000)
+EXPOSE 3000
+
+# Commande par défaut (on suppose que vous avez un script "dev" dans package.json)
+CMD ["npm", "run", "dev"]

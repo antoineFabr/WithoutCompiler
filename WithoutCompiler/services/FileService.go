@@ -19,37 +19,60 @@ func NewFileService() *FileService {
 func (c *FileService) Startup(ctx context.Context) {
 	c.ctx = ctx
 }
-// DownloadFile télécharge une URL et l'enregistre dans un dossier spécifique
-func (s *FileService) DownloadDockerFile(url string, targetFolder string, fileName string) string {
+
+func (s *FileService) DownloadDockerConfig(url string, targetFolder string, fileName string) string {
     
    
 
-    // 2. Construire le chemin complet (ex: C:/Users/Downloads/docker.zip)
-    fullPath := filepath.Join(targetFolder, fileName)
+    urlDockerFile := url +"/dockerfile"
+    urlDockerCompose := url + "/docker-compose.yml"
+    fullPathDockerFile := filepath.Join(targetFolder, "dockerfile")
+    fullPathDockerCompose := filepath.Join(targetFolder, "dockerfile")
 
-    // 3. Créer le fichier vide sur le disque
-    out, err := os.Create(fullPath)
+    outDockerFile, err := os.Create(fullPathDockerCompose)
     if err != nil {
         return "Erreur création fichier: " + err.Error()
     }
-    defer out.Close() // On fermera le fichier à la fin
+    defer outDockerFile.Close()
+
+    outDockerCompose, err := os.Create(fullPathDockerFile)
+    if err != nil {
+        return "Erreur création fichier: " + err.Error()
+    }
+    defer outDockerCompose.Close() 
 
     // 4. Lancer la requête HTTP (le "curl")
-    resp, err := http.Get(url)
+    respDockerFile, errDockerFile := http.Get(urlDockerFile)
     if err != nil {
         return "Erreur téléchargement: " + err.Error()
     }
-    defer resp.Body.Close() // On fermera la connexion réseau à la fin
+    defer respDockerFile.Body.Close()
+
+    respDockerCompose, errDockerCompose := http.Get(urlDockerCompose)
+    if err != nil {
+        return "Erreur téléchargement: " + err.Error()
+    }
+    defer respDockerCompose.Body.Close()
+
 
     // Vérifier que le serveur a répondu 200 OK
-    if resp.StatusCode != http.StatusOK {
-        return fmt.Sprintf("Erreur serveur: %s", resp.Status)
+    if respDockerFile.StatusCode != http.StatusOK {
+        return fmt.Sprintf("Erreur serveur: %s", respDockerFile.Status)
     }
 
-    _, err = io.Copy(out, resp.Body)
+    if respDockerCompose.StatusCode != http.StatusOK {
+        return fmt.Sprintf("Erreur serveur: %s", respDockerCompose.Status)
+    }
+
+    _DockerFile, err = io.Copy(outDockerFile, respDockerFile.Body)
     if err != nil {
         return "Erreur lors de l'écriture: " + err.Error()
     }
 
-    return "Succès : Fichier téléchargé dans " + fullPath
+    _Dockercompose, err = io.Copy(outDockerCompose, respDockerCompose.Body)
+    if err != nil {
+        return "Erreur lors de l'écriture: " + err.Error()
+    }
+
+    return "Succès"
 }

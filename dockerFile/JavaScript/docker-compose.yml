@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    # Nom du conteneur pour le trouver facilement
+    container_name: mon-projet-node
+    ports:
+      - "3000:3000"
+    volumes:
+      # 1. On lie le dossier actuel (.) de ton ordi vers /app dans le conteneur
+      - .:/app
+      # 2. L'ASTUCE CRUCIALE : on crée un volume anonyme pour node_modules
+      # Cela empêche ton dossier local (vide ou incompatible) d'écraser celui du conteneur
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development

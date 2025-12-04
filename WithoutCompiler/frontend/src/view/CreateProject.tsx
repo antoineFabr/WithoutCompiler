@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { OpenFolderDialog } from "../../wailsjs/go/main/App";
+import { CreatProject } from "../../wailsjs/go/services/ProjectService";
 
 export default function CreateProject() {
   const [path, setPath] = useState("");
   const [language, setLanguage] = useState("");
   const languages = ["JavaScript", "Go", "Rust", "C"];
+  const [response, setResponse] = useState("");
   const handleSelectFolder = () => {
     OpenFolderDialog().then((selectedPath) => {
       if (selectedPath) {
@@ -13,7 +15,11 @@ export default function CreateProject() {
     });
   };
 
-  const handleCreateProject = () => {};
+  const handleCreateProject = () => {
+    CreatProject(path, language).then((res) => {
+      setResponse(res);
+    });
+  };
   return (
     <>
       <h1>Create a project</h1>
@@ -44,7 +50,10 @@ export default function CreateProject() {
             </option>
           ))}
         </select>
-        {language && path && <button>créer le projet</button>}
+        {language && path && (
+          <button onClick={handleCreateProject}>créer le projet</button>
+        )}
+        {response && <h1>{response}</h1>}
       </div>
     </>
   );
