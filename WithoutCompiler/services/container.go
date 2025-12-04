@@ -8,13 +8,11 @@ import (
 
 type ContainerService struct {
 	ctx context.Context
-	fileService *FileService
 
 }
 
-func NewContainerService(fs *FileService) *ContainerService {
+func NewContainerService() *ContainerService {
 	return &ContainerService{
-		fileService: fs,
 	}
 }
 

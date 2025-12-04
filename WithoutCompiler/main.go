@@ -17,7 +17,7 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 	fileService := services.NewFileService()
-	
+	ProjectService := services.NewProjectService(fileService)
 	containerService := services.NewContainerService()
 
 
@@ -33,10 +33,12 @@ func main() {
 		OnStartup:	func(ctx context.Context) {
 			fileService.Startup(ctx)
 			app.startup(ctx)
+			ProjectService.Startup(ctx)
 			containerService.Startup(ctx)
 		},
 		Bind: []interface{}{
 			app,
+			ProjectService,
 			containerService,
 			fileService,
 		},

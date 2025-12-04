@@ -12,6 +12,8 @@ export default function CreateProject() {
       }
     });
   };
+
+  const handleCreateProject = () => {};
   return (
     <>
       <h1>Create a project</h1>
